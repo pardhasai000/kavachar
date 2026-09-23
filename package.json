@@ -1,0 +1,24 @@
+{
+  "name": "ps41-worker-safety-ar-certification",
+  "version": "1.0.0",
+  "description": "Problem Statement 41 (PS 41): AR-Powered Worker Training, Assessment, Certification & QR Verification Platform",
+  "main": "server/src/index.js",
+  "scripts": {
+    "start": "node server/src/index.js",
+    "server": "node server/src/index.js",
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "test": "node server/tests/api.test.js"
+  },
+  "keywords": [
+    "ps-41",
+    "ar-simulation",
+    "worker-training",
+    "qr-verification",
+    "threejs",
+    "smart-india-hackathon"
+  ],
+  "author": "PS-41 Safety Engineering Team",
+  "license": "MIT"
+}
+
