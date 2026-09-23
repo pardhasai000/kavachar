@@ -38,7 +38,7 @@ export default function LanguageSelect({ selectedLang, onSelectLang, onContinue 
       <div className="text-center space-y-3 mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider">
           <Shield size={14} />
-          <span>PS-41 • Directorate General of Mines Safety (DGMS)</span>
+          <span>Kavach AR • Directorate General of Mines Safety (DGMS)</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">

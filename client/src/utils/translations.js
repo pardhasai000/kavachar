@@ -2,7 +2,7 @@
 
 export const translations = {
   en: {
-    appName: 'PS-41 Mine Safety & AR Training Platform',
+    appName: 'Kavach AR - Mine Safety & Disaster Training Platform',
     selectLanguageTitle: 'Select Your Training Language',
     selectLanguageSubtitle: 'Choose your preferred language to proceed with underground mine safety training.',
     continueBtn: 'Continue to Mine Selection',
@@ -117,7 +117,7 @@ export const translations = {
   },
 
   hi: {
-    appName: 'PS-41 खदान सुरक्षा एवं एआर प्रशिक्षण मंच',
+    appName: 'Kavach AR - खदान सुरक्षा एवं एआर प्रशिक्षण मंच',
     selectLanguageTitle: 'अपनी प्रशिक्षण भाषा चुनें',
     selectLanguageSubtitle: 'भूमिगत खदान सुरक्षा प्रशिक्षण शुरू करने के लिए अपनी पसंदीदा भाषा चुनें।',
     continueBtn: 'खदान चयन के लिए आगे बढ़ें',
@@ -232,7 +232,7 @@ export const translations = {
   },
 
   sat: {
-    appName: 'PS-41 ᱠᱷᱟᱫᱟᱱ ᱨᱩᱠᱷᱤᱭᱟᱹ ᱟᱨ AR ᱴᱨᱮᱱᱤᱝ ᱯᱞᱮᱴᱯᱷᱚᱨᱢ',
+    appName: 'Kavach AR - ᱠᱷᱟᱫᱟᱱ ᱨᱩᱠᱷᱤᱭᱟᱹ ᱟᱨ AR ᱴᱨᱮᱱᱤᱝ ᱯᱞᱮᱴᱯᱷᱚᱨᱢ',
     selectLanguageTitle: 'ᱟᱢᱟᱜ ᱴᱨᱮᱱᱤᱝ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮ',
     selectLanguageSubtitle: 'ᱠᱷᱟᱫᱟᱱ ᱵᱷᱤᱛᱨᱤ ᱨᱮ ᱨᱩᱠᱷᱤᱭᱟᱹ ᱪᱮᱫᱚᱜ ᱞᱟᱹᱜᱤᱫ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮ (Choose Language)᱾',
     continueBtn: 'ᱠᱷᱟᱫᱟᱱ ᱵᱟᱪᱷᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱞᱟᱦᱟᱜ ᱢᱮ',

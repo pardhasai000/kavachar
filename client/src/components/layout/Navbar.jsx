@@ -39,7 +39,7 @@ export default function Navbar({
       <div className="bg-slate-900/80 px-4 py-1.5 border-b border-slate-800/60 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="font-semibold text-slate-300">PS-41 DGMS Mine Safety:</span>
+          <span className="font-semibold text-slate-300">Kavach AR • DGMS Mine Safety:</span>
           <span className="hidden sm:inline">Trilingual Industrial Hazard Simulator</span>
         </div>
 
@@ -100,7 +100,7 @@ export default function Navbar({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-lg text-white tracking-tight">PS-41</span>
+                <span className="font-black text-lg text-white tracking-tight">Kavach AR</span>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase">
                   DGMS MINE SAFETY
                 </span>

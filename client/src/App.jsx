@@ -94,7 +94,8 @@ function MiningApp() {
         <div className="bg-slate-900/60 border-b border-slate-800/80 px-4 py-2">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1.5 font-bold text-slate-400">
-              <span>PS-41 Mining Safety Flow:</span>
+              <span className="text-cyan-400">Kavach AR</span>
+              <span>• Safety Flow:</span>
             </div>
 
             <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
@@ -236,7 +237,7 @@ function MiningApp() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-slate-400">
             <ShieldCheck size={16} className="text-cyan-400" />
-            <span className="font-semibold text-white">PS-41 Directorate General of Mines Safety (DGMS)</span>
+            <span className="font-semibold text-white">Kavach AR • Directorate General of Mines Safety (DGMS)</span>
             <span>• Coal Mines Regulations (CMR 2017)</span>
           </div>
           <div>

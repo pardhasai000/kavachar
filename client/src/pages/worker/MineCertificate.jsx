@@ -113,13 +113,13 @@ export default function MineCertificate({ certificate, selectedLang, selectedMin
               Government of Jharkhand • Department of Mines & Geology
             </h4>
             <h5 className="text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-slate-600 mt-0.5">
-              Directorate General of Mines Safety (DGMS) • Dhanbad, Jharkhand
+              Kavach AR • Directorate General of Mines Safety (DGMS) • Dhanbad, Jharkhand
             </h5>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 uppercase tracking-wider font-serif">
               Colliery Disaster Safety Credential
             </h1>
             <p className="text-[11px] font-sans font-semibold text-slate-600 uppercase tracking-widest mt-1">
-              {t.certSub} • Government of Jharkhand State Mining Compliance
+              {t.certSub} • Kavach AR Jharkhand Mining Compliance
             </p>
             <div className="w-56 h-0.5 bg-gradient-to-r from-transparent via-amber-900 to-transparent mx-auto mt-3"></div>
           </div>

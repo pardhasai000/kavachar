@@ -1,10 +1,10 @@
-# Kavachar (कवच / ᱠᱚᱵᱚᱪ) — PS-41 Mine Safety & AR Disaster Simulator
+# Kavach AR (कवच / ᱠᱚᱵᱚᱪ) — Mine Safety & AR Disaster Simulator
 
 > **Government of Jharkhand • Department of Mines & Geology (झारखंड सरकार)**  
 > **Directorate General of Mines Safety (DGMS) • Dhanbad, Jharkhand**  
 > _Statutory Compliance: Coal Mines Regulations (CMR 2017)_
 
-**Kavachar** is a next-generation underground mining safety and disaster response platform tailored specifically for the coal and mineral mining workforce of **Jharkhand**. It features trilingual accessibility (**English, Hindi, Santali**), colliery hazard mapping for Jharkhand coalfields, realistic 3D simulation videos, interactive Three.js drills for **Methane Gas Inrush** and **Coal Dust Fire Explosions**, and verifiable DGMS digital certification with cryptographic QR seals.
+**Kavach AR** is a next-generation underground mining safety and disaster response platform tailored specifically for the coal and mineral mining workforce of **Jharkhand**. It features trilingual accessibility (**English, Hindi, Santali**), colliery hazard mapping for Jharkhand coalfields, realistic 3D simulation videos, interactive Three.js drills for **Methane Gas Inrush** and **Coal Dust Fire Explosions**, and verifiable DGMS digital certification with cryptographic QR seals.
 
 ---
 

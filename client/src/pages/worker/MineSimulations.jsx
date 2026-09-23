@@ -775,7 +775,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              JHARKHAND MINE HAZARD SIMULATOR
+              KAVACH AR • JHARKHAND MINE HAZARD SIMULATOR
             </span>
             <span className="text-xs text-slate-400 font-medium">Colliery: <strong className="text-white">{getMineName()}</strong></span>
           </div>
