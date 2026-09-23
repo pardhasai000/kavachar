@@ -305,7 +305,7 @@ export const translations = {
   }
 };
 
-// Indian Coal & Mineral Mines Catalog
+// // Jharkhand State Coal & Mineral Mines Catalog (Govt of Jharkhand / DGMS Eastern Zone)
 export const MINES_CATALOG = [
   {
     id: 'mine_jharia',
@@ -313,47 +313,59 @@ export const MINES_CATALOG = [
     nameHi: 'झरिया भूमिगत कोयला खदान पिट #4',
     nameSat: 'ᱡᱷᱟᱨᱤᱭᱟ ᱠᱩᱭᱞᱟᱹ ᱠᱷᱟᱫᱟᱱ ᱯᱤᱴ #᱔',
     company: 'Bharat Coking Coal Limited (BCCL)',
-    location: 'Dhanbad, Jharkhand',
+    location: 'Dhanbad, Jharkhand (झारखंड)',
     depth: '420 Meters',
     hazardRating: 'Critical (Degree-III Gassy)',
     hazardType: 'Underground Methane Inrush & Spontaneous Coal Combustion',
     badgeColor: 'red'
   },
   {
-    id: 'mine_raniganj',
-    name: 'Raniganj Deep Colliery Seam VIII',
-    nameHi: 'रानीगंज गहरी कोलियरी सीम VIII',
-    nameSat: 'ᱨᱟᱹᱱᱤᱜᱚᱸᱡᱽ ᱜᱟᱹᱦᱤᱨ ᱠᱚᱞᱤᱭᱟᱨᱤ ᱥᱤᱢ VIII',
-    company: 'Eastern Coalfields Limited (ECL)',
-    location: 'Paschim Bardhaman, West Bengal',
-    depth: '580 Meters',
+    id: 'mine_bokaro',
+    name: 'Bokaro Bermo Deep Colliery & Incline',
+    nameHi: 'बोकारो बेरमो गहरी कोलियरी एवं इनक्लाइन',
+    nameSat: 'ᱵᱚᱠᱟᱨᱚ ᱵᱮᱨᱢᱳ ᱜᱟᱹᱦᱤᱨ ᱠᱚᱞᱤᱭᱟᱨᱤ',
+    company: 'Central Coalfields Limited (CCL)',
+    location: 'Bokaro, Jharkhand (झारखंड)',
+    depth: '510 Meters',
     hazardRating: 'High (Degree-III Gassy)',
-    hazardType: 'Coal Dust Explosion & High Ground Pressure',
+    hazardType: 'Coal Dust Explosion & High Methane Emission in Deep Seam',
     badgeColor: 'amber'
   },
   {
-    id: 'mine_singrauli',
-    name: 'Singrauli Mega Coal Pit & Incline',
-    nameHi: 'सिंगरौली मेगा कोयला पिट एवं इनक्लाइन',
-    nameSat: 'ᱥᱤᱝᱨᱳᱞᱤ ᱢᱮᱜᱟ ᱠᱩᱭᱞᱟᱹ ᱯᱤᱴ',
-    company: 'Northern Coalfields Limited (NCL)',
-    location: 'Singrauli, Madhya Pradesh',
-    depth: '250 Meters',
-    hazardRating: 'Moderate to High',
-    hazardType: 'Blasting Gas Hazard, Toxic Carbon Monoxide & High Dust',
+    id: 'mine_karanpura',
+    name: 'North Karanpura (Pipwar Colliery)',
+    nameHi: 'उत्तरी कर्णपुरा (पिपरवार कोलियरी)',
+    nameSat: 'ᱩᱛᱛᱚᱨ ᱠᱚᱨᱚᱱᱯᱩᱨᱟ ᱠᱚᱞᱤᱭᱟᱨᱤ',
+    company: 'Central Coalfields Limited (CCL)',
+    location: 'Chatra / Ranchi, Jharkhand (झारखंड)',
+    depth: '320 Meters',
+    hazardRating: 'High (Degree-II Gassy)',
+    hazardType: 'Spontaneous Coal Seam Heating & Toxic Carbon Monoxide Build-up',
+    badgeColor: 'orange'
+  },
+  {
+    id: 'mine_rajrappa',
+    name: 'Rajrappa Underground Incline Project',
+    nameHi: 'रजरप्पा भूमिगत इनक्लाइन परियोजना',
+    nameSat: 'ᱨᱟᱡᱽᱨᱟᱯᱯᱟ ᱠᱷᱟᱫᱟᱱ ᱯᱨᱚᱡᱮᱠᱴ',
+    company: 'Central Coalfields Limited (CCL)',
+    location: 'Ramgarh, Jharkhand (झारखंड)',
+    depth: '360 Meters',
+    hazardRating: 'High Risk',
+    hazardType: 'Water Inrush, Heavy Roof Fractures & Flammable Gas Inflow',
     badgeColor: 'blue'
   },
   {
-    id: 'mine_korba',
-    name: 'Korba Underground Gevra Colliery',
-    nameHi: 'कोरबा भूमिगत गेवरा कोलियरी',
-    nameSat: 'ᱠᱳᱨᱵᱟ ᱜᱮᱵᱷᱨᱟ ᱠᱚᱞᱤᱭᱟᱨᱤ',
-    company: 'South Eastern Coalfields Limited (SECL)',
-    location: 'Korba, Chhattisgarh',
-    depth: '380 Meters',
-    hazardRating: 'High (Degree-II Gassy)',
-    hazardType: 'Spontaneous Heating & Conveyor Belt Friction Fire',
-    badgeColor: 'emerald'
+    id: 'mine_jaduguda',
+    name: 'Jaduguda Deep Underground Shaft',
+    nameHi: 'जादूगोड़ा गहरी भूमिगत शाफ्ट',
+    nameSat: 'ᱡᱟᱫᱩᱜᱚᱰᱟ ᱜᱟᱹᱦᱤᱨ ᱠᱷᱟᱫᱟᱱ',
+    company: 'UCIL (Dept of Atomic Energy)',
+    location: 'East Singhbhum, Jharkhand (झारखंड)',
+    depth: '940 Meters (Deepest in Jharkhand)',
+    hazardRating: 'Special High Risk',
+    hazardType: 'Extreme Depth Geostatic Pressure, Toxic Gases & Rockburst',
+    badgeColor: 'purple'
   }
 ];
 
