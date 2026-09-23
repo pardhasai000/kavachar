@@ -85,8 +85,8 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
 
   const [toastMessage, setToastMessage] = useState(
     drillType === 'gas' 
-      ? 'Underground Methanometer alert: Hazardous gas inrush detected at coal face!' 
-      : 'Active spontaneous combustion fire detected! Trigger explosion barrier immediately!'
+      ? '⚠️ Alert: Bad gas leaking from the roof! Put on your oxygen mask now!' 
+      : '⚠️ Alert: Fire seen in the coal mine! Drop stone dust right away!'
   );
 
   // Video progress timer loop
@@ -372,7 +372,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 12px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText('STONE-DUST BARRIER ARRESTING FLAME', cx, 80);
+          ctx.fillText('STONE DUST DROPPED • FIRE BLAST STOPPED', cx, 80);
         }
 
         // Phase 3: Foam Deluge & Refuge Chamber Secure (24s to 30s)
@@ -389,7 +389,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 13px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText('REFUGE CHAMBER SEALED • 48H LIFE SUPPORT', cx, cy - 2);
+          ctx.fillText('SAFE ROOM CLOSED • FRESH OXYGEN RUNNING', cx, cy - 2);
         }
 
       } else {
@@ -465,8 +465,8 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
 
           ctx.fillStyle = '#38bdf8';
           ctx.font = 'bold 11px monospace';
-          ctx.fillText('SCSR RESPIRATOR: ON', 35, 45);
-          ctx.fillText('OXYGEN PURITY: 99.4%', 35, 65);
+          ctx.fillText('OXYGEN MASK: ON', 35, 45);
+          ctx.fillText('CLEAN AIR: FLOWING (100%)', 35, 65);
         }
 
         // Fresh Air Brattice Curtain Deployment (after 20s)
@@ -476,7 +476,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 12px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText('VENTILATION BRATTICE DILUTING TOXIC GAS', cx, cy + 60);
+          ctx.fillText('AIR CURTAIN OPEN • BAD GAS PUSHED OUT', cx, cy + 60);
         }
       }
 
@@ -709,10 +709,10 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
   const handleGasStep = (stepKey) => {
     if (stepKey === 'sniffer') {
       setGasSteps(prev => ({ ...prev, sniffer: true }));
-      setToastMessage('⚠️ Methanometer confirms 8.2% Methane & 140 PPM CO! Critical danger!');
+      setToastMessage('⚠️ Dangerous gas found! Do NOT make any spark or flame!');
     } else if (stepKey === 'scsr') {
       setGasSteps(prev => ({ ...prev, scsr: true }));
-      setToastMessage('🫁 SCSR Oxygen Mask donned within 45s! Chemical oxygen supply initiated.');
+      setToastMessage('🫁 Oxygen mask is ON! You are breathing clean, safe air.');
     } else if (stepKey === 'vent') {
       setGasSteps(prev => ({ ...prev, vent: true }));
       setMethanePercent(0.4);
@@ -720,7 +720,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
       if (gasParticlesRef.current) {
         gasParticlesRef.current.material.opacity = 0.15;
       }
-      setToastMessage('💨 Ventilation curtain deployed! Fresh intake air diluted methane to 0.4%.');
+      setToastMessage('💨 Fresh air curtain is OPEN! Clean air is pushing away the bad gas.');
     } else if (stepKey === 'evacuate') {
       setGasSteps(prev => ({ ...prev, evacuate: true }));
       setToastMessage(t.gasPassedToast);
@@ -736,20 +736,20 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
       if (stoneDustShelfRef.current) {
         stoneDustShelfRef.current.rotation.x = 0.8;
       }
-      setToastMessage('🌪️ Stone dust barrier discharged! Explosion flame propagation arrested.');
+      setToastMessage('🌪️ Stone dust dropped! Fire blast has been stopped.');
     } else if (stepKey === 'deluge') {
       setFireSteps(prev => ({ ...prev, deluge: true }));
       setTemperatureC(32);
       if (fireParticlesRef.current) {
         fireParticlesRef.current.material.opacity = 0.2;
       }
-      setToastMessage('🧯 High-expansion foam blanket sprayed over burning coal face!');
+      setToastMessage('🧯 Thick fire foam sprayed! Burning coal is cooling down.');
     } else if (stepKey === 'firedoor') {
       setFireSteps(prev => ({ ...prev, firedoor: true }));
       if (blastDoorRef.current) {
         blastDoorRef.current.rotation.y = Math.PI / 2;
       }
-      setToastMessage('🚪 Heavy explosion-proof blast door sealed shut to starve oxygen.');
+      setToastMessage('🚪 Heavy iron doors shut! Fire cannot get air and smoke is trapped.');
     } else if (stepKey === 'refuge') {
       setFireSteps(prev => ({ ...prev, refuge: true }));
       setToastMessage(t.firePassedToast);
@@ -820,7 +820,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
               onClick={() => {
                 setDrillType('gas');
                 setVideoTime(0);
-                setToastMessage('Underground Methanometer alert: Hazardous gas inrush detected!');
+                setToastMessage('⚠️ Alert: Bad gas leaking from roof! Put on your oxygen mask now.');
               }}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer ${
                 drillType === 'gas'
@@ -837,7 +837,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
               onClick={() => {
                 setDrillType('fire');
                 setVideoTime(0);
-                setToastMessage('Active spontaneous combustion fire detected! Trigger explosion barrier!');
+                setToastMessage('⚠️ Alert: Fire seen in the coal mine! Drop stone dust right away.');
               }}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer ${
                 drillType === 'fire'
@@ -872,18 +872,18 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
               <div className="relative z-10 m-4 bg-slate-950/90 backdrop-blur border border-slate-800 rounded-xl p-3 shadow-2xl text-xs space-y-1.5 max-w-[220px]">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <Gauge size={13} className="text-cyan-400" />
-                  <span>DGMS Telemetry HUD</span>
+                  <span>DGMS Safety Meter</span>
                 </div>
 
                 {drillType === 'fire' ? (
                   <div className="space-y-1 font-mono text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Heading Temp:</span>
+                      <span className="text-slate-400">Tunnel Heat:</span>
                       <span className="font-bold text-orange-400 animate-pulse">{temperatureC}°C</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Blast Pressure:</span>
-                      <span className="font-bold text-red-400">5.2 Bar (Shockwave)</span>
+                      <span className="text-slate-400">Blast Danger:</span>
+                      <span className="font-bold text-red-400">HIGH RISK (Blast Wave)</span>
                     </div>
                     <div className="pt-1 border-t border-slate-800 text-[10px] text-orange-400 font-bold">
                       {t.fireDanger}
@@ -892,11 +892,11 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
                 ) : (
                   <div className="space-y-1 font-mono text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">CH4 Inrush:</span>
+                      <span className="text-slate-400">Methane Gas:</span>
                       <span className="font-bold text-red-400 animate-pulse">{methanePercent}%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">CO Poisoning:</span>
+                      <span className="text-slate-400">Bad Smoke (CO):</span>
                       <span className="font-bold text-red-400">{coPPM} PPM</span>
                     </div>
                     <div className="pt-1 border-t border-slate-800 text-[10px] text-red-400 font-bold">
@@ -985,10 +985,10 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
                     <span>00:{Math.floor(videoTime).toString().padStart(2, '0')}</span>
                     <span className="text-cyan-400">
                       {drillType === 'fire' 
-                        ? (videoTime < 12 ? 'Phase: Coal Dust Deflagration' : videoTime < 22 ? 'Phase: Stone-Dust Barrier Discharge' : 'Phase: Refuge Chamber Sealing')
-                        : (videoTime < 10 ? 'Phase: Methane Gas Roof Inrush' : videoTime < 20 ? 'Phase: SCSR Chemical Mask Donning' : 'Phase: Intake Airway Dilution')}
+                        ? (videoTime < 12 ? 'Step 1: Fire & Dust Blast' : videoTime < 22 ? 'Step 2: Dropping Stone Dust' : 'Step 3: Entering Safe Shelter Room')
+                        : (videoTime < 10 ? 'Step 1: Bad Gas Leaking from Roof' : videoTime < 20 ? 'Step 2: Putting on Oxygen Mask' : 'Step 3: Fresh Air Clearing Smoke')}
                     </span>
-                    <span>Disaster Timeline: 00:30</span>
+                    <span>Total Time: 00:30</span>
                   </div>
                 </div>
 
@@ -1029,16 +1029,33 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
         {/* Right: Step-by-Step SOP Checklist HUD */}
         <div className="lg:col-span-4 p-5 bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
                 <CheckCircle2 size={16} className="text-cyan-400" />
-                <span>{drillType === 'gas' ? 'Gas Inrush Mitigation' : 'Explosion Suppression'}</span>
+                <span>{drillType === 'gas' ? 'Gas Leak: Simple Action Steps' : 'Fire Accident: Simple Action Steps'}</span>
               </h3>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400">
                 {drillType === 'gas'
                   ? `${Object.values(gasSteps).filter(Boolean).length} / 4`
                   : `${Object.values(fireSteps).filter(Boolean).length} / 4`}
               </span>
+            </div>
+
+            {/* Simple Life-Saving Rules Callout Box */}
+            <div className={`mb-3.5 p-3 rounded-xl border text-xs ${
+              drillType === 'gas' 
+                ? 'bg-amber-950/40 border-amber-500/40 text-amber-200' 
+                : 'bg-orange-950/40 border-orange-500/40 text-orange-200'
+            }`}>
+              <div className="font-bold flex items-center gap-1.5 mb-1.5 text-xs text-white">
+                <AlertTriangle size={15} className={drillType === 'gas' ? 'text-amber-400' : 'text-orange-400'} />
+                <span>{drillType === 'gas' ? (t.simpleRulesTitleGas || 'Simple Life-Saving Steps (Gas Leak):') : (t.simpleRulesTitleFire || 'Simple Life-Saving Steps (Fire Accident):')}</span>
+              </div>
+              <ol className="space-y-1 text-[11px] list-decimal list-inside text-slate-200 font-medium">
+                {(drillType === 'gas' ? t.simpleRulesGas : t.simpleRulesFire)?.map((rule, idx) => (
+                  <li key={idx} className="leading-snug">{rule}</li>
+                ))}
+              </ol>
             </div>
 
             {/* Checklist Items for Gas Drill */}
@@ -1185,7 +1202,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
               </button>
             ) : (
               <p className="text-[11px] text-slate-500 text-center">
-                Watch the realistic 3D simulation video or complete the checklist steps to unlock the assignment.
+                Watch the 3D video or complete the 4 simple steps above to unlock your test.
               </p>
             )}
           </div>
