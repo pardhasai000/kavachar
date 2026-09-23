@@ -1,103 +1,120 @@
-# PS-41: AR-Powered Worker Training, Assessment, Certification & QR Verification Platform
+# Kavachar (कवच / ᱠᱚᱵᱚᱪ) — PS-41 Mine Safety & AR Disaster Simulator
 
-> **Problem Statement 41 (PS 41)**: An end-to-end industrial safety training and regulatory compliance platform featuring role-based portals (Admin, Trainee/Worker, Verifier), interactive 3D/WebAR emergency drills, automated examination grading, instant tamper-evident certificate issuance, and cryptographic QR verification.
+> **Government of Jharkhand • Department of Mines & Geology (झारखंड सरकार)**  
+> **Directorate General of Mines Safety (DGMS) • Dhanbad, Jharkhand**  
+> *Statutory Compliance: Coal Mines Regulations (CMR 2017)*
+
+**Kavachar** is a next-generation underground mining safety and disaster response platform tailored specifically for the coal and mineral mining workforce of **Jharkhand**. It features trilingual accessibility (**English, Hindi, Santali**), colliery hazard mapping for Jharkhand coalfields, realistic 3D simulation videos, interactive Three.js drills for **Methane Gas Inrush** and **Coal Dust Fire Explosions**, and verifiable DGMS digital certification with cryptographic QR seals.
 
 ---
 
-## 🌟 Core Pillars Mapped to PS 41
+## 🌟 Key Features & Workflow
 
 ```
-PS 41
-│
-├── 1. User Requirements
-│   ├── Admin (Regulatory oversight, curriculum authoring, audit logs)
-│   ├── Worker/Trainee (Interactive SOPs, 3D/AR drill, competency exams, credential wallet)
-│   └── Verifier (Mobile QR scanner & cryptographic audit terminal)
-│
-├── 2. Core Features
-│   ├── Registration & 1-Click Demo Login (Admin, Worker, Verifier)
-│   ├── Interactive Training Curricula (SOP protocols, ISO 45001 & Factories Act)
-│   ├── 3D / WebAR Simulation (Three.js real-time hazards, pressure telemetry, emergency valves)
-│   ├── Competency Assessment (Timed examinations, instant evaluation)
-│   ├── Certificate Generation (High-res canvas/PDF, dynamic QR, SHA-256 seal)
-│   └── QR Verification (Public portal, in-browser camera scanning, tamper detection)
-│
-├── 3. Admin Portal
-│   ├── Real-Time KPI Telemetry Dashboard
-│   ├── Trainee & Operator Registry
-│   ├── Training Modules & Simulation Scenarios Management
-│   ├── Master Certificate Registry (Revocation & Reinstatement)
-│   └── Regulatory Compliance Audit Trail
-│
-├── 4. Worker/Trainee Portal
-│   ├── Trainee Profile & Safety Readiness Index
-│   ├── Training Modules with SOP Documentation
-│   ├── 3D / WebAR Emergency Steam Valve & Incident Drill
-│   ├── Automated Competency Examination
-│   ├── Instant Evaluation & Scorecard
-│   └── Digital Safety Credential Wallet (Print & PDF Export)
-│
-├── 5. Backend
-│   ├── JWT Authentication & Role-Based Access Control (RBAC)
-│   ├── RESTful APIs for Modules, Simulations, Exams, and Audits
-│   ├── SQLite Database (WAL mode, relational integrity)
-│   ├── In-Memory & File Storage for 3D assets & credentials
-│   └── SHA-256 Cryptographic QR Verification Engine
-│
-└── 6. End-to-End Demo
-    Admin Setup → Worker SOP → 3D Simulation Drill → Exam
-    → Certificate Issuance → QR Scan → Real-Time Verification
+Step 1: Choose Language (English | हिंदी | ᱥᱟᱱᱛᱟᱲᱤ Santali)
+   │
+   ▼
+Step 2: Select Jharkhand Mine (Jharia | Bokaro | North Karanpura | Rajrappa | Jaduguda)
+   │
+   ▼
+Step 3: Portal Selection (Miner / Worker Portal  vs  DGMS Safety Admin Portal)
+   │
+   ├── [Worker / Miner Panel]
+   │    ├── 🎬 Realistic 3D Simulation Video (Thermal Infrared Explosion & Optical Gas Imaging)
+   │    ├── 🎮 3D Interactive Drill (Methanometer, SCSR Mask, Stone-Dust Barrier, Refuge Chamber)
+   │    ├── 📝 Multilingual Safety Assignment (Evaluated in chosen language)
+   │    └── 📜 Government of Jharkhand DGMS Certificate (With QR Code & PDF Export)
+   │
+   └── [Admin / Safety Officer Panel]
+        ├── 📊 Mine-by-Mine Compliance Telemetry
+        ├── 🗣️ Tribal & Language Adoption Breakdown (Santali 46%, Hindi 38%, English 16%)
+        └── 🔏 Master Certificate Ledger with Revocation Controls
 ```
 
 ---
 
-## 🚀 Quick Start & Running the Project
+## ⛏️ 100% Jharkhand Collieries Catalog
 
-### 1. Run the Full-Stack Application
+All training curricula and hazard configurations represent authentic mining sites across Jharkhand:
 
-To start the unified production server (serves both API & React UI):
+| Colliery / Mine Site | District | Operating Agency | Primary Geological Hazard |
+|---|---|---|---|
+| **Jharia Underground Coalfield Pit #4** | Dhanbad | BCCL | Critical Degree-III Methane Inrush & Historic Spontaneous Combustion Fires |
+| **Bokaro Bermo Deep Colliery & Incline** | Bokaro | CCL | Deep Coking Coal Dust Explosion Risk & High Methane Emission |
+| **North Karanpura (Pipwar Colliery)** | Chatra / Ranchi | CCL | Thick Seam Spontaneous Coal Heating & Toxic Carbon Monoxide ($CO$) Accumulation |
+| **Rajrappa Underground Incline Project** | Ramgarh | CCL | Damodar Basin Water Inrush & Flammable Gas Inflow |
+| **Jaduguda Deep Underground Shaft** | East Singhbhum | UCIL | 940m Deepest Shaft in Jharkhand; Toxic Gases & Rockburst |
 
+---
+
+## 🌐 Trilingual Workforce Accessibility
+
+Designed for tribal and regional mine workers across the Jharkhand mining belt:
+* **🇬🇧 English**: Technical standard mining rules and DGMS guidelines.
+* **🇮🇳 हिंदी (Hindi)**: Lingua franca across Central & Northern Indian coalfields.
+* **⛏️ ᱥᱟᱱᱛᱟᱲᱤ (Santali)**: Full **Ol Chiki** native script and phonetic transliteration designed specifically for indigenous Santhal miners in Jharkhand, Odisha, and West Bengal.
+
+---
+
+## 🎬 Realistic 3D Simulation Videos & Interactive Drills
+
+Trainees can switch between:
+1. **🎥 Realistic 3D Simulation Video Mode**:
+   - **Underground Fire & Coal Dust Explosion**: High-definition footage of underground coal dust explosion deflagration shockwaves, thermal infrared flamefront analysis, and slow-motion ($0.5\times / 1.0\times$) stone-dust barrier quenching.
+   - **Underground Gas Leak**: Optical Gas Imaging (OGI) video of invisible Methane billowing from coal fissures, high-pitch Methanometer alarm sirens ($8.2\% \text{ CH}_4$, $140\text{ PPM CO}$), and SCSR mask donning in zero visibility.
+2. **🎮 3D Hands-On Interactive Drill (Three.js)**:
+   - Full 3D underground drift with coal walls, haulage tracks, timber props, and ventilation duct.
+   - Interactive 4-step emergency checklist with real-time telemetry HUD.
+
+---
+
+## 📜 Government of Jharkhand DGMS Certificate
+
+Miners who pass the competency assignment ($\ge 80\%$) automatically earn the official **Directorate General of Mines Safety (DGMS)** credential:
+* Official seal of **Government of Jharkhand • Department of Mines & Geology**
+* Mentions Trainee Name, Selected Jharkhand Mine, Language, and Score
+* High-resolution **dynamic QR Code** linking to the public verification endpoint
+* Cryptographic **SHA-256 Tamper-Proof Digital Seal**
+* High-quality **PDF Download** for physical display
+
+---
+
+## 🚀 Running the Project Locally
+
+### 1. Start the Platform
 ```bash
 npm start
 ```
+- **Local Application Link**: 👉 **[http://localhost:5000](http://localhost:5000)**
+- **API Health Endpoint**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
+- **Sample Verified QR Dossier**: [http://localhost:5000/verify/c7e849b2-38b4-4b51-9318-7a523b499182](http://localhost:5000/verify/c7e849b2-38b4-4b51-9318-7a523b499182)
 
-- **Application URL**: `http://localhost:5000`
-- **Public Verification Endpoint**: `http://localhost:5000/verify/:certId`
-- **Backend API**: `http://localhost:5000/api`
-
-### 2. Development Mode (with Hot Reloading)
-
-In two separate terminals:
-
-```bash
-# Terminal 1: Start Backend API
-npm run server
-
-# Terminal 2: Start Vite Client
-npm run client
-```
-
-Access the client at `http://localhost:3000`.
-
-### 3. Run Automated Tests
-
+### 2. Run Automated Verification Tests
 ```bash
 npm test
 ```
+All 8 end-to-end tests validate authentication, mine tracking, 3D simulation submissions, multilingual evaluation, and cryptographic QR verification.
 
 ---
 
-## 👥 Demo Personas (1-Click Switcher)
+## ☁️ Deployment on Netlify
 
-| Persona                    | Role                            | Default Account                          |
-| -------------------------- | ------------------------------- | ---------------------------------------- |
-| **Dr. Vikram Sharma**      | Director General (Admin)        | `admin@safety.gov.in` / `admin123`       |
-| **Rajesh Kumar**           | Machine Operator (Worker)       | `rajesh.kumar@plant.in` / `worker123`    |
-| **Inspector Ananya Patil** | Chief Safety Auditor (Verifier) | `inspector.patil@audit.org` / `audit123` |
+This repository is pre-configured with `netlify.toml` and SPA `_redirects`:
+
+1. **GitHub Repository**: 👉 **[https://github.com/pardhasai000/kavachar](https://github.com/pardhasai000/kavachar)**
+2. **1-Click Netlify Deploy**: 👉 **[Deploy Kavachar to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/pardhasai000/kavachar)**
+3. When connected, any push to `main` automatically triggers Netlify continuous deployment!
 
 ---
 
-## 🛠️ Technology Stack
+## 👥 Demo Personas
 
-- **Frontend**: React 19, Vite 8, Tailwind CSS v4, Lucide Icons, Three.js (3D & WebAR engine), `html5-qrcode` (camera QR scanning), `jspdf` & `html2canvas` (PDF generation).
-- **Backend**: Node.js, Express, `better-sqlite3` (SQLite engine), `jsonwebtoken`, `qrcode`, `crypto` (SHA-256 hashing).
+| Persona | Role | Default Account |
+|---|---|---|
+| **Dr. V. K. Sharma** | Director General (Admin) | `admin@safety.gov.in` / `admin123` |
+| **Rajesh Kumar / Bablu Soren** | Coalface Miner (Worker) | `rajesh.kumar@plant.in` / `worker123` |
+| **Er. Ananya Patil** | Colliery Safety Inspector (Verifier) | `inspector.patil@audit.org` / `audit123` |
+
+---
+
+*Developed for the Government of Jharkhand Department of Mines & Geology under Problem Statement 41 (PS-41).*
