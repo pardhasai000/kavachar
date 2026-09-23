@@ -10,18 +10,19 @@ import {
   RotateCw, 
   ArrowRight, 
   Check, 
-  Sparkles,
-  RefreshCw,
-  Gauge,
-  Radio,
-  Play,
-  Pause,
-  Film,
-  Box,
-  Volume2,
-  VolumeX,
-  FastForward,
-  Maximize2
+  Sparkles, 
+  RefreshCw, 
+  Gauge, 
+  Radio, 
+  Play, 
+  Pause, 
+  Film, 
+  Box, 
+  Volume2, 
+  VolumeX, 
+  FastForward, 
+  Eye, 
+  Sliders 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { translations } from '../../utils/translations';
@@ -37,13 +38,29 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
   
   // Video player controls
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [videoTime, setVideoTime] = useState(0);
+  const [videoTime, setVideoTime] = useState(0); // 0 to 30 seconds
+  const [visionMode, setVisionMode] = useState('thermal'); // 'normal' | 'thermal' | 'ogi'
+
+  // Canvas ref for Realistic 3D Simulation Video Render
+  const videoCanvasRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const sirenOscRef = useRef(null);
+
+  // Three.js interactive mode refs
+  const mountRef = useRef(null);
+  const videoRef = useRef(null);
+  const sceneRef = useRef(null);
+  const rendererRef = useRef(null);
+  const gasParticlesRef = useRef(null);
+  const fireParticlesRef = useRef(null);
+  const stoneDustShelfRef = useRef(null);
+  const blastDoorRef = useRef(null);
+  const warningLightRef = useRef(null);
 
   // AR Camera toggle
   const [isARMode, setIsARMode] = useState(false);
-  const [arError, setArError] = useState(null);
 
   // Gas Leak Checklist
   const [gasSteps, setGasSteps] = useState({
@@ -72,50 +89,408 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
       : 'Active spontaneous combustion fire detected! Trigger explosion barrier immediately!'
   );
 
-  // Three.js object references
-  const mountRef = useRef(null);
-  const videoRef = useRef(null);
-  const sceneRef = useRef(null);
-  const rendererRef = useRef(null);
-  const gasParticlesRef = useRef(null);
-  const fireParticlesRef = useRef(null);
-  const stoneDustShelfRef = useRef(null);
-  const blastDoorRef = useRef(null);
-  const warningLightRef = useRef(null);
-
-  // Realistic Simulation Video Milestones
-  const gasTimeline = [
-    { time: 3, label: 'CH4 & CO Gas Inrush detected', desc: 'Roof fracture vents 8.2% explosive firedamp' },
-    { time: 8, label: 'Methanometer Sniffer Alert', desc: 'Optical sensor triggers high-pitch sirens' },
-    { time: 14, label: 'SCSR Breathing Mask Donned', desc: 'Chemical oxygen initiates under 60 seconds' },
-    { time: 21, label: 'Ventilation Curtain Dilution', desc: 'Intake fresh air reduces methane to 0.4%' },
-    { time: 27, label: 'Safe Lifeline Evacuation', desc: 'Crew navigates to intake shaft' }
-  ];
-
-  const fireTimeline = [
-    { time: 3, label: 'Spontaneous Coal Seam Ignition', desc: 'Coal face temperatures surge past 85°C' },
-    { time: 8, label: 'Coal Dust Explosion Shockwave', desc: 'Deflagration wave expands along the drift' },
-    { time: 14, label: 'Stone-Dust Barrier Discharge', desc: 'Limestone dust quenches trailing flamefront' },
-    { time: 20, label: 'High-Pressure Foam Blanket', desc: 'Heavy foam cannon smothers burning coal seam' },
-    { time: 27, label: 'Blast Door Sealed & Refuge Occupied', desc: 'Crew enters airtight 48h safety chamber' }
-  ];
-
-  // Video progress timer simulation
+  // Video progress timer loop
   useEffect(() => {
     let interval;
     if (viewMode === 'video' && isPlaying) {
       interval = setInterval(() => {
         setVideoTime(prev => {
-          const next = prev + 0.5 * playbackSpeed;
+          const next = prev + 0.25 * playbackSpeed;
           if (next >= 30) return 0;
           return next;
         });
-      }, 500);
+      }, 250);
     }
     return () => clearInterval(interval);
   }, [viewMode, isPlaying, playbackSpeed]);
 
-  // Build 3D Three.js Scene (for interactive mode)
+  // Web Audio Alarm Siren synthesizer
+  useEffect(() => {
+    if (!isMuted && isPlaying && viewMode === 'video') {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!audioContextRef.current) {
+          audioContextRef.current = new AudioContext();
+        }
+        const ctx = audioContextRef.current;
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+
+        // Modulate frequency to create an emergency siren wavering tone
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.linearRampToValueAtTime(1100, now + 0.6);
+        osc.frequency.linearRampToValueAtTime(600, now + 1.2);
+
+        gain.gain.setValueAtTime(0.08, now);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+
+        sirenOscRef.current = { osc, gain };
+
+        const sirenInterval = setInterval(() => {
+          if (!audioContextRef.current) return;
+          const t = audioContextRef.current.currentTime;
+          osc.frequency.setValueAtTime(600, t);
+          osc.frequency.linearRampToValueAtTime(1100, t + 0.6);
+          osc.frequency.linearRampToValueAtTime(600, t + 1.2);
+        }, 1200);
+
+        return () => {
+          clearInterval(sirenInterval);
+          try {
+            osc.stop();
+            osc.disconnect();
+          } catch (e) {}
+        };
+      } catch (err) {
+        console.warn('Web Audio not allowed without interaction');
+      }
+    } else {
+      if (sirenOscRef.current) {
+        try {
+          sirenOscRef.current.osc.stop();
+          sirenOscRef.current.osc.disconnect();
+        } catch (e) {}
+        sirenOscRef.current = null;
+      }
+    }
+  }, [isMuted, isPlaying, viewMode]);
+
+  // ==========================================
+  // REALISTIC 3D VIDEO SIMULATION ENGINE (CANVAS)
+  // ==========================================
+  useEffect(() => {
+    if (viewMode !== 'video') return;
+    const canvas = videoCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId;
+    let frameCount = 0;
+
+    // Particle caches
+    const sparks = Array.from({ length: 90 }, () => ({
+      x: 0,
+      y: 0,
+      vx: (Math.random() - 0.5) * 14,
+      vy: (Math.random() - 0.7) * 12,
+      size: Math.random() * 3.5 + 1.5,
+      life: Math.random() * 50
+    }));
+
+    const smokePlumes = Array.from({ length: 45 }, (_, i) => ({
+      x: 200 + Math.random() * 400,
+      y: 150 + Math.random() * 150,
+      radius: 30 + Math.random() * 60,
+      speedX: (Math.random() - 0.5) * 1.5,
+      speedY: -Math.random() * 1.2 - 0.4,
+      opacity: Math.random() * 0.5 + 0.3
+    }));
+
+    const gasVapors = Array.from({ length: 60 }, () => ({
+      x: Math.random() * 800,
+      y: 80 + Math.random() * 180,
+      radius: 40 + Math.random() * 80,
+      alpha: Math.random() * 0.4 + 0.2,
+      drift: Math.random() * 1.2 + 0.4
+    }));
+
+    const render = () => {
+      animId = requestAnimationFrame(render);
+      frameCount++;
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      // 1. Clear background
+      ctx.fillStyle = '#06080e';
+      ctx.fillRect(0, 0, width, height);
+
+      // Camera Shake calculation during explosion or high inrush
+      let shakeX = 0;
+      let shakeY = 0;
+      if (drillType === 'fire' && videoTime >= 5 && videoTime <= 16) {
+        const shakeMag = (16 - videoTime) * 1.2;
+        shakeX = (Math.random() - 0.5) * shakeMag;
+        shakeY = (Math.random() - 0.5) * shakeMag;
+      }
+      ctx.save();
+      ctx.translate(shakeX, shakeY);
+
+      // 2. Render 3D Perspective Mine Gallery Tunnel Walls
+      const cx = width / 2;
+      const cy = height / 2 - 20;
+
+      // Vanishing point perspective lines (Mine rails & timber props)
+      ctx.strokeStyle = '#27272a';
+      ctx.lineWidth = 1.5;
+
+      // Roof & Floor boundary
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(width, 0);
+      ctx.moveTo(0, height);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(width, height);
+      ctx.stroke();
+
+      // Coal Tunnel Track Rails
+      ctx.strokeStyle = '#52525b';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(cx - 20, cy + 30);
+      ctx.lineTo(cx - 140, height);
+      ctx.moveTo(cx + 20, cy + 30);
+      ctx.lineTo(cx + 140, height);
+      ctx.stroke();
+
+      // Rail Sleepers
+      for (let y = cy + 40; y < height; y += (y - cy) * 0.28 + 10) {
+        const span = (y - cy) * 0.9;
+        ctx.strokeStyle = '#3f3f46';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(cx - span, y);
+        ctx.lineTo(cx + span, y);
+        ctx.stroke();
+      }
+
+      // Timber Pit Props along the gallery walls
+      const timberLevels = [0.2, 0.45, 0.72, 1.0];
+      timberLevels.forEach((lvl, idx) => {
+        const topY = cy - (cy * lvl);
+        const botY = cy + ((height - cy) * lvl);
+        const leftX = cx - (cx * lvl);
+        const rightX = cx + (cx * lvl);
+
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 6 * lvl + 2;
+
+        // Left timber post
+        ctx.beginPath();
+        ctx.moveTo(leftX, topY);
+        ctx.lineTo(leftX, botY);
+        ctx.stroke();
+
+        // Right timber post
+        ctx.beginPath();
+        ctx.moveTo(rightX, topY);
+        ctx.lineTo(rightX, botY);
+        ctx.stroke();
+
+        // Overhead timber crossbar
+        ctx.beginPath();
+        ctx.moveTo(leftX, topY);
+        ctx.lineTo(rightX, topY);
+        ctx.stroke();
+      });
+
+      // 3. HAZARD SCENE RENDERING:
+      if (drillType === 'fire') {
+        // ===================================
+        // FIRE & COAL DUST EXPLOSION SCENE
+        // ===================================
+        const progress = videoTime; // 0 to 30
+
+        // Phase 1: Ignition & Blast Wave (0 to 14s)
+        if (progress < 18) {
+          // Dynamic Fireball Core expanding from the heading (cx, cy)
+          const blastRadius = Math.min(260, 40 + progress * 16);
+          const fireGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, blastRadius);
+
+          if (visionMode === 'thermal') {
+            // Thermal Infrared color palette (White hot -> yellow -> magenta -> deep blue)
+            fireGrad.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+            fireGrad.addColorStop(0.2, 'rgba(254, 240, 138, 0.92)');
+            fireGrad.addColorStop(0.5, 'rgba(239, 68, 68, 0.85)');
+            fireGrad.addColorStop(0.8, 'rgba(168, 85, 247, 0.65)');
+            fireGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+          } else {
+            // Realistic visible combustion (Yellow core -> Orange flame -> Dark soot)
+            fireGrad.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+            fireGrad.addColorStop(0.25, 'rgba(251, 146, 60, 0.92)');
+            fireGrad.addColorStop(0.65, 'rgba(220, 38, 38, 0.85)');
+            fireGrad.addColorStop(0.9, 'rgba(30, 27, 24, 0.7)');
+            fireGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          }
+
+          ctx.fillStyle = fireGrad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, blastRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Explosive Shockwave Distortion Rings
+          ctx.strokeStyle = 'rgba(254, 215, 170, 0.6)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(cx, cy, blastRadius * 1.15, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Flying Coal Sparks & Burning Embers
+          sparks.forEach(s => {
+            s.x += s.vx;
+            s.y += s.vy;
+            s.vy += 0.15; // Gravity
+            if (s.y > height - 30 || s.x < 0 || s.x > width) {
+              s.x = cx + (Math.random() - 0.5) * 60;
+              s.y = cy + (Math.random() - 0.5) * 40;
+              s.vx = (Math.random() - 0.5) * 16;
+              s.vy = (Math.random() - 0.8) * 12;
+            }
+
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        // Phase 2: Stone-Dust Explosion Barrier Deployment (14s to 24s)
+        if (progress >= 12 && progress < 24) {
+          // Cascading incombustible limestone stone-dust cloud
+          ctx.fillStyle = 'rgba(241, 245, 249, 0.75)';
+          for (let i = 0; i < 30; i++) {
+            const dustX = cx + (Math.sin(i * 13 + frameCount * 0.05) * 220);
+            const dustY = cy - 60 + ((frameCount * 3 + i * 20) % 280);
+            ctx.beginPath();
+            ctx.arc(dustX, dustY, 25 + (i % 15), 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Stone dust banner indicator
+          ctx.fillStyle = '#0284c7';
+          ctx.fillRect(cx - 150, 60, 300, 30);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 12px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('STONE-DUST BARRIER ARRESTING FLAME', cx, 80);
+        }
+
+        // Phase 3: Foam Deluge & Refuge Chamber Secure (24s to 30s)
+        if (progress >= 22) {
+          // Thick foam suppression blanket on floor
+          ctx.fillStyle = 'rgba(226, 232, 240, 0.85)';
+          ctx.beginPath();
+          ctx.ellipse(cx, height - 70, 260, 60, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Refuge Chamber door sealed notice
+          ctx.fillStyle = '#16a34a';
+          ctx.fillRect(cx - 160, cy - 30, 320, 45);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 13px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('REFUGE CHAMBER SEALED • 48H LIFE SUPPORT', cx, cy - 2);
+        }
+
+      } else {
+        // ===================================
+        // GAS LEAK & METHANE INRUSH SCENE
+        // ===================================
+        const progress = videoTime;
+
+        // Coal Roof Fissure with Gas Inrush Plumes
+        const fissureX = cx - 40;
+        const fissureY = 70;
+
+        // Fissure crack
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(fissureX - 60, fissureY);
+        ctx.lineTo(fissureX, fissureY + 15);
+        ctx.lineTo(fissureX + 70, fissureY - 10);
+        ctx.stroke();
+
+        // Optical Gas Imaging (OGI) Turbulent Gas Plumes
+        gasVapors.forEach((gv, idx) => {
+          gv.y += Math.sin(frameCount * 0.05 + idx) * 0.4;
+          gv.x += gv.drift * 0.8;
+          if (gv.x > width + 50) gv.x = fissureX - 30;
+
+          const gasGrad = ctx.createRadialGradient(gv.x, gv.y, 5, gv.x, gv.y, gv.radius);
+          if (visionMode === 'thermal') {
+            // Optical gas false-color thermal palette
+            gasGrad.addColorStop(0, 'rgba(163, 230, 53, 0.7)');
+            gasGrad.addColorStop(0.5, 'rgba(234, 179, 8, 0.45)');
+            gasGrad.addColorStop(1, 'rgba(30, 41, 59, 0)');
+          } else {
+            // Semi-visible vapor plume
+            gasGrad.addColorStop(0, 'rgba(190, 242, 100, 0.5)');
+            gasGrad.addColorStop(0.6, 'rgba(132, 204, 22, 0.25)');
+            gasGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          }
+
+          ctx.fillStyle = gasGrad;
+          ctx.beginPath();
+          ctx.arc(gv.x, gv.y, gv.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Optical Gas Crosshair Scanner tracking methane accumulation
+        const scanX = cx + Math.sin(frameCount * 0.04) * 120;
+        const scanY = 120 + Math.cos(frameCount * 0.03) * 40;
+
+        ctx.strokeStyle = '#22c55e';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(scanX - 25, scanY - 25, 50, 50);
+        ctx.beginPath();
+        ctx.moveTo(scanX - 35, scanY);
+        ctx.lineTo(scanX + 35, scanY);
+        ctx.moveTo(scanX, scanY - 35);
+        ctx.lineTo(scanX, scanY + 35);
+        ctx.stroke();
+
+        ctx.fillStyle = '#22c55e';
+        ctx.font = 'bold 11px monospace';
+        ctx.fillText(`CH4: ${(8.2 - (progress > 18 ? 7.6 : 0)).toFixed(1)}% VOL`, scanX + 30, scanY - 10);
+
+        // If SCSR Mask Donned (after 10s), draw SCSR visor overlay HUD
+        if (progress >= 10) {
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+          ctx.lineWidth = 4;
+          ctx.strokeRect(20, 20, width - 40, height - 40);
+
+          ctx.fillStyle = 'rgba(14, 165, 233, 0.15)';
+          ctx.fillRect(25, 25, 180, 55);
+
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 11px monospace';
+          ctx.fillText('SCSR RESPIRATOR: ON', 35, 45);
+          ctx.fillText('OXYGEN PURITY: 99.4%', 35, 65);
+        }
+
+        // Fresh Air Brattice Curtain Deployment (after 20s)
+        if (progress >= 18) {
+          ctx.fillStyle = '#059669';
+          ctx.fillRect(cx - 150, cy + 40, 300, 30);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 12px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('VENTILATION BRATTICE DILUTING TOXIC GAS', cx, cy + 60);
+        }
+      }
+
+      ctx.restore();
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animId);
+    };
+  }, [viewMode, drillType, isPlaying, videoTime, playbackSpeed, visionMode]);
+
+  // Three.js Interactive Scene
   useEffect(() => {
     if (viewMode !== 'interactive') return;
     const container = mountRef.current;
@@ -483,75 +858,24 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
         {/* Left: Viewport (Video or Interactive 3D) */}
         <div className="lg:col-span-8 relative bg-slate-950 min-h-[500px] flex items-center justify-center overflow-hidden">
           {viewMode === 'video' ? (
-            /* 1. Realistic 3D Simulation Video Player Component */
+            /* 1. Realistic 3D Simulation Video Player Component (Self-Contained 60FPS Canvas) */
             <div className="w-full h-full min-h-[520px] relative bg-black flex flex-col justify-between overflow-hidden">
-              {/* Video Simulation Canvas / Surface */}
-              <div className="absolute inset-0 z-0">
-                {drillType === 'fire' ? (
-                  /* Realistic Underground Coal Dust Explosion Simulation Visuals */
-                  <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-                    {/* Embedded Educational Underground Mine Explosion Footage */}
-                    <iframe
-                      className="w-full h-full absolute inset-0 pointer-events-none scale-105 opacity-90"
-                      src="https://www.youtube.com/embed/S_8qMskfU4w?autoplay=1&mute=1&controls=0&loop=1&playlist=S_8qMskfU4w&showinfo=0&rel=0&modestbranding=1"
-                      title="NIOSH Underground Coal Dust Explosion Simulation"
-                      allow="autoplay; encrypted-media"
-                    />
+              {/* Canvas Rendering Surface */}
+              <canvas
+                ref={videoCanvasRef}
+                width={860}
+                height={520}
+                className="w-full h-full object-cover absolute inset-0 z-0"
+              />
 
-                    {/* Realistic Blast Shockwave & Thermal HUD Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-red-950/40 mix-blend-color-burn pointer-events-none" />
-
-                    {/* Infrared / Thermal Camera Simulation HUD */}
-                    <div className="absolute top-4 right-4 bg-red-950/80 backdrop-blur border border-red-500/50 rounded-xl px-3 py-1.5 text-xs text-red-200 font-mono flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-                      <span>THERMAL INFRARED FLAME SENSOR • ACTIVE</span>
-                    </div>
-                  </div>
-                ) : (
-                  /* Realistic Underground Gas Leak & Methane Dispersion Simulation Visuals */
-                  <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-                    {/* Embedded Optical Gas Imaging (OGI) & Methane Inrush Simulation */}
-                    <iframe
-                      className="w-full h-full absolute inset-0 pointer-events-none scale-105 opacity-90"
-                      src="https://www.youtube.com/embed/g6j3k4r6f3Q?autoplay=1&mute=1&controls=0&loop=1&playlist=g6j3k4r6f3Q&showinfo=0&rel=0&modestbranding=1"
-                      title="Underground Methane Inrush Simulation"
-                      allow="autoplay; encrypted-media"
-                    />
-
-                    {/* Toxic Vapor Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-lime-950/40 pointer-events-none" />
-
-                    {/* Optical Gas Camera HUD */}
-                    <div className="absolute top-4 right-4 bg-lime-950/80 backdrop-blur border border-lime-500/50 rounded-xl px-3 py-1.5 text-xs text-lime-200 font-mono flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-lime-500 animate-ping" />
-                      <span>OPTICAL GAS IMAGING (OGI) • 8.2% CH4</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Dynamic Telemetry HUD */}
-              <div className="relative z-10 m-4 bg-slate-950/90 backdrop-blur border border-slate-800 rounded-xl p-3 shadow-2xl text-xs space-y-1.5 max-w-[210px]">
+              {/* Dynamic Telemetry HUD Overlay */}
+              <div className="relative z-10 m-4 bg-slate-950/90 backdrop-blur border border-slate-800 rounded-xl p-3 shadow-2xl text-xs space-y-1.5 max-w-[220px]">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <Gauge size={13} className="text-cyan-400" />
-                  <span>Colliery Sensor Grid</span>
+                  <span>DGMS Telemetry HUD</span>
                 </div>
 
-                {drillType === 'gas' ? (
-                  <div className="space-y-1 font-mono text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">CH4:</span>
-                      <span className="font-bold text-red-400 animate-pulse">{methanePercent}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">CO:</span>
-                      <span className="font-bold text-red-400">{coPPM} PPM</span>
-                    </div>
-                    <div className="pt-1 border-t border-slate-800 text-[10px] text-red-400 font-bold">
-                      {t.gasHazard}
-                    </div>
-                  </div>
-                ) : (
+                {drillType === 'fire' ? (
                   <div className="space-y-1 font-mono text-xs">
                     <div className="flex justify-between">
                       <span className="text-slate-400">Heading Temp:</span>
@@ -559,13 +883,50 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Blast Pressure:</span>
-                      <span className="font-bold text-red-400">4.8 Bar (Shockwave)</span>
+                      <span className="font-bold text-red-400">5.2 Bar (Shockwave)</span>
                     </div>
                     <div className="pt-1 border-t border-slate-800 text-[10px] text-orange-400 font-bold">
                       {t.fireDanger}
                     </div>
                   </div>
+                ) : (
+                  <div className="space-y-1 font-mono text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">CH4 Inrush:</span>
+                      <span className="font-bold text-red-400 animate-pulse">{methanePercent}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">CO Poisoning:</span>
+                      <span className="font-bold text-red-400">{coPPM} PPM</span>
+                    </div>
+                    <div className="pt-1 border-t border-slate-800 text-[10px] text-red-400 font-bold">
+                      {t.gasHazard}
+                    </div>
+                  </div>
                 )}
+              </div>
+
+              {/* Top-Right Vision Mode & Audio Controls */}
+              <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+                <button
+                  onClick={() => setVisionMode(visionMode === 'thermal' ? 'normal' : 'thermal')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-950/90 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 shadow-lg backdrop-blur cursor-pointer hover:bg-slate-900"
+                >
+                  <Eye size={13} className="text-cyan-400" />
+                  <span>{visionMode === 'thermal' ? 'Thermal Vision (ON)' : 'Standard Vision'}</span>
+                </button>
+
+                <button
+                  onClick={() => setIsMuted(!isMuted)}
+                  className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-lg backdrop-blur cursor-pointer transition ${
+                    !isMuted 
+                      ? 'bg-red-600 text-white animate-pulse' 
+                      : 'bg-slate-950/90 border border-slate-700 text-slate-300 hover:bg-slate-900'
+                  }`}
+                  title={isMuted ? 'Turn Alarm Siren Sound ON' : 'Mute Siren'}
+                >
+                  {!isMuted ? <Volume2 size={15} /> : <VolumeX size={15} />}
+                </button>
               </div>
 
               {/* Video Player Controller Bar at Bottom */}
@@ -582,12 +943,11 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
                   <button
                     onClick={() => setVideoTime(0)}
                     className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 cursor-pointer transition"
-                    title="Replay from Beginning"
+                    title="Replay from 00:00"
                   >
                     <RefreshCw size={14} />
                   </button>
 
-                  {/* Playback speed selector */}
                   <div className="flex items-center gap-1 bg-slate-900 px-2 py-1 rounded-lg border border-slate-800 font-mono text-[11px]">
                     <span className="text-slate-500">Speed:</span>
                     <button
@@ -607,20 +967,33 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
 
                 {/* Scrubber Timeline Bar */}
                 <div className="flex-1 mx-3 hidden sm:block">
-                  <div className="w-full bg-slate-800 rounded-full h-1.5 relative overflow-hidden">
+                  <div 
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const clickX = e.clientX - rect.left;
+                      const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+                      setVideoTime(ratio * 30);
+                    }}
+                    className="w-full bg-slate-800 rounded-full h-2 relative overflow-hidden cursor-pointer"
+                  >
                     <div 
-                      className="bg-gradient-to-r from-red-500 via-orange-500 to-cyan-500 h-1.5 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-red-500 via-orange-500 to-cyan-500 h-2 rounded-full transition-all duration-200"
                       style={{ width: `${(videoTime / 30) * 100}%` }}
                     />
                   </div>
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+                  <div className="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
                     <span>00:{Math.floor(videoTime).toString().padStart(2, '0')}</span>
+                    <span className="text-cyan-400">
+                      {drillType === 'fire' 
+                        ? (videoTime < 12 ? 'Phase: Coal Dust Deflagration' : videoTime < 22 ? 'Phase: Stone-Dust Barrier Discharge' : 'Phase: Refuge Chamber Sealing')
+                        : (videoTime < 10 ? 'Phase: Methane Gas Roof Inrush' : videoTime < 20 ? 'Phase: SCSR Chemical Mask Donning' : 'Phase: Intake Airway Dilution')}
+                    </span>
                     <span>Disaster Timeline: 00:30</span>
                   </div>
                 </div>
 
                 <div className="text-[11px] text-slate-400 font-mono">
-                  <span>HD 1080p 3D Simulation</span>
+                  <span className="text-emerald-400 font-bold">1080p 60FPS 3D Render</span>
                 </div>
               </div>
             </div>
@@ -644,7 +1017,7 @@ export default function MineSimulations({ selectedLang, selectedMine, activeDril
           )}
 
           {/* Supervisor Audio Feed Callout */}
-          <div className="absolute top-4 right-4 z-20 max-w-xs bg-slate-950/90 backdrop-blur border border-cyan-500/30 rounded-xl p-3 shadow-xl text-xs text-slate-200 hidden md:block">
+          <div className="absolute top-16 right-4 z-20 max-w-xs bg-slate-950/90 backdrop-blur border border-cyan-500/30 rounded-xl p-3 shadow-xl text-xs text-slate-200 hidden md:block">
             <div className="font-semibold text-cyan-400 flex items-center gap-1.5 mb-1">
               <Radio size={13} className="animate-pulse" />
               <span>Colliery Safety Feed ({selectedMine?.company}):</span>
